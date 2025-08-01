@@ -59,37 +59,67 @@
     });
   };
 
-  // ✅ Page loader
-  window.dashboard = (pageName) => {
-    // 🔒 Sanitize: remove any extensions
-    pageName = pageName.replace(/\.(html|php)$/i, "");
+  // // ✅ Page loader
+  // window.dashboard = (pageName) => {
+  //   // 🔒 Sanitize: remove any extensions
+  //   pageName = pageName.replace(/\.(html|php)$/i, "");
 
-    fetch(`${pageName}.html`)
-      .then(res => res.text())
-      .then(html => {
-        const contentContainer = document.querySelector(".main-content");
-        contentContainer.innerHTML = html;
+  //   fetch(`${pageName}.html`)
+  //     .then(res => res.text())
+  //     .then(html => {
+  //       const contentContainer = document.querySelector(".main-content");
+  //       contentContainer.innerHTML = html;
 
-        // Remove and re-inject dynamic script
-        const existingScript = document.getElementById("dynamic-script");
-        if (existingScript) existingScript.remove();
+  //       // Remove and re-inject dynamic script
+  //       const existingScript = document.getElementById("dynamic-script");
+  //       if (existingScript) existingScript.remove();
 
-        const script = document.createElement("script");
-        script.type = "module";
-        script.src = `${pageName}.js`;
-        script.id = "dynamic-script";
-        document.body.appendChild(script);
+  //       const script = document.createElement("script");
+  //       script.type = "module";
+  //       script.src = `${pageName}.js`;
+  //       script.id = "dynamic-script";
+  //       document.body.appendChild(script);
 
-        // Highlight active sidebar item
-        const links = document.querySelectorAll(".sidebar a");
-        links.forEach(link => link.classList.remove("active"));
-        const currentLink = Array.from(links).find(link =>
-          link.getAttribute("onclick")?.includes(pageName)
-        );
-        if (currentLink) currentLink.classList.add("active");
-      })
-      .catch(err => console.error("❌ Failed to load page:", err));
-  };
+  //       // Highlight active sidebar item
+  //       const links = document.querySelectorAll(".sidebar a");
+  //       links.forEach(link => link.classList.remove("active"));
+  //       const currentLink = Array.from(links).find(link =>
+  //         link.getAttribute("onclick")?.includes(pageName)
+  //       );
+  //       if (currentLink) currentLink.classList.add("active");
+  //     })
+  //     .catch(err => console.error("❌ Failed to load page:", err));
+  // };
+// ✅ Page loader with script refresh and forced execution
+window.dashboard = (pageName) => {
+  pageName = pageName.replace(/\.(html|php)$/i, ""); // Sanitize
+
+  fetch(`${pageName}.html`)
+    .then(res => res.text())
+    .then(html => {
+      const contentContainer = document.querySelector(".main-content");
+      contentContainer.innerHTML = html;
+
+      // Remove and reload dynamic script (fresh execution every time)
+      const existingScript = document.getElementById("dynamic-script");
+      if (existingScript) existingScript.remove();
+
+      const newScript = document.createElement("script");
+      newScript.type = "module";
+      newScript.src = `${pageName}.js?nocache=${Date.now()}`; // Force no-cache
+      newScript.id = "dynamic-script";
+      document.body.appendChild(newScript);
+
+      // Highlight active menu
+      const links = document.querySelectorAll(".sidebar .menu-link");
+      links.forEach(link => link.classList.remove("active"));
+      const activeLink = Array.from(links).find(link =>
+        link.getAttribute("onclick")?.includes(pageName)
+      );
+      if (activeLink) activeLink.classList.add("active");
+    })
+    .catch(err => console.error(`❌ Failed to load ${pageName}:`, err));
+};
 
   // ✅ Auth listener → load default dashboard.html
   onAuthStateChanged(auth, async (user) => {
