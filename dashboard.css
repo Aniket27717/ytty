@@ -13,7 +13,9 @@
   position: relative;
   
 }
-
+.chargingOn{
+  display: none;
+}
 .dashboard legend {
   color: #00e6b8;
   font-size: 1.5rem;
