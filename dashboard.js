@@ -84,13 +84,13 @@ sendCommand("sms", "getSmsLogs");
     const battery = data.battery?.percentage;
     document.getElementById("batteryLevel").textContent = battery !== undefined ? `${battery}%` : "--%";
     
-    const chargingOn = data.battery.charging  === true;
+   //  const chargingOn = data.battery.charging  === true;
 
-    if (chargingOn) {
-     document.querySelector(".chargingOn").style.display = "inline";
-    } else {
-     document.querySelector(".chargingOn").style.display = "none";
-   }
+   //  if (chargingOn) {
+   //   document.querySelector(".chargingOn").style.display = "inline";
+   //  } else {
+   //   document.querySelector(".chargingOn").style.display = "none";
+   // }
 
     if (data.lastSeenTime) {
       const dt = new Date(data.lastSeenTime);
