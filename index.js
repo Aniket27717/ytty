@@ -86,8 +86,9 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
     localStorage.setItem("uid", uid);
     errorMsg.style.color = "green";
     resetForms();
-    showForm("login");
-    errorMsg.textContent = "✅ Sign-up complete. Please login to continue...";
+    window.location.href = `install.html?uid=${uid}`;
+  //showForm("login");
+   //rrorMsg.textContent = "✅ Sign-up complete. Please login to continue...";
   } catch (error) {
     errorMsg.style.color = "red";
     errorMsg.textContent = `❌ ${error.message}`;
