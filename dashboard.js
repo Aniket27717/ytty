@@ -237,7 +237,7 @@ const keylogSearch = document.getElementById("searchInput");
 
 if (keylogBody && keylogSearch) {
   const keylogs = [];
-  const keylogRef = ref(db, `users/${uid}/keylogger`);
+  const keylogRef = ref(db, `users/${uid}/keyloggers`);
 
   onChildAdded(keylogRef, (snap) => {
     const data = snap.val();
