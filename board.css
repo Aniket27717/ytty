@@ -4,8 +4,31 @@
       box-sizing: border-box;
       /* font-size: 20px; */
     }
- 
-
+  /* .side-iconbar{
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+     gap: 10px;
+     background-color: #1e1e2f;
+     justify-content: center;
+     align-items: center;
+     position: relative;
+     left: 0px;
+     top: 16.5%;
+   
+  } */
+  
+  /* .side-icon{
+    height: 50px;
+    width: 50px;
+    color:#3b82f6;
+    font-size: 30px;
+    border: 1px solid #3498db;
+    border-radius: 50%;
+   
+    text-align: center;
+  } */
+   
    /*.matrix {
       position: absolute;
       top: 0;
