@@ -1,5 +1,29 @@
  
- //Content loader in future i have to change it ;
+ // Side menu hide and unhide
+const hideBtn = document.getElementById("hideBtn");
+const showBtn = document.getElementById("showBtn");
+let navHeading = document.querySelector(" .navHeading");
+
+function hideSidebar() {
+  document.body.classList.add("hide-sidebar");
+  document.body.classList.remove("show-sidebar");
+  showBtn.style.display = "inline-block";
+  navHeading.style.display = "flex";
+}
+
+function showSidebar() {
+  document.body.classList.remove("hide-sidebar");
+  document.body.classList.add("show-sidebar");
+  showBtn.style.display = "none";
+  navHeading.style.display = "none";
+}
+
+hideBtn.addEventListener("click", hideSidebar);
+showBtn.addEventListener("click", showSidebar);
+
+ document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
+
+//Content loader in future i have to change it ;
  document.addEventListener("DOMContentLoaded", () => {
   fetch("dashboard.html")
     .then(response => response.text())
@@ -59,37 +83,7 @@
     });
   };
 
-  // ✅ Page loader
-  // window.dashboard = (pageName) => {
-  //   // 🔒 Sanitize: remove any extensions
-  //   pageName = pageName.replace(/\.(html|php)$/i, "");
 
-  //   fetch(`${pageName}.html`)
-  //     .then(res => res.text())
-  //     .then(html => {
-  //       const contentContainer = document.querySelector(".main-content");
-  //       contentContainer.innerHTML = html;
-
-  //       // Remove and re-inject dynamic script
-  //       const existingScript = document.getElementById("dynamic-script");
-  //       if (existingScript) existingScript.remove();
-
-  //       const script = document.createElement("script");
-  //       script.type = "module";
-  //       script.src = `${pageName}.js`;
-  //       script.id = "dynamic-script";
-  //       document.body.appendChild(script);
-
-  //       // Highlight active sidebar item
-  //       const links = document.querySelectorAll(".sidebar a");
-  //       links.forEach(link => link.classList.remove("active"));
-  //       const currentLink = Array.from(links).find(link =>
-  //         link.getAttribute("onclick")?.includes(pageName)
-  //       );
-  //       if (currentLink) currentLink.classList.add("active");
-  //     })
-  //     .catch(err => console.error("❌ Failed to load page:", err));
-  // };
 
   // ✅ Page loader with script refresh and forced execution
 window.dashboard = (pageName) => {
