@@ -53,9 +53,14 @@ if (hideBtn && showBtn) {
 // ✅ Refresh site button
 document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
 
-// ✅ Page Loader Function
-window.dashboard = (pageName) => {
+// ✅ Page Loader Function (updated to use pushState)
+window.dashboard = (pageName, useHistory = true) => {
   pageName = pageName.replace(/\.(html|php)$/i, ""); // Sanitize
+
+  // Update URL using history.pushState
+  if (useHistory) {
+    history.pushState({ page: pageName }, "", `/dashboard/${pageName}`);
+  }
 
   fetch(`${pageName}.html`)
     .then(res => res.text())
@@ -82,6 +87,13 @@ window.dashboard = (pageName) => {
       if (activeLink) activeLink.classList.add("active");
     })
     .catch(err => console.error(`❌ Failed to load ${pageName}:`, err));
+};
+
+// ✅ Handle browser back/forward buttons
+window.onpopstate = (event) => {
+  if (event.state?.page) {
+    dashboard(event.state.page, false); // Don't push state again
+  }
 };
 
 // ✅ Firebase Logout
@@ -115,8 +127,11 @@ onAuthStateChanged(auth, async (user) => {
     const uid = user.uid;
     localStorage.setItem("uid", uid);
 
-    // Load dashboard
-    dashboard("dashboard");
+    // ✅ On initial load, determine which page to show
+    const path = window.location.pathname;
+    const match = path.match(/\/dashboard\/([^\/]+)/);
+    const initialPage = match?.[1] || "dashboard";
+    dashboard(initialPage, false); // Load page without pushing state again
 
     // Load user data (optional)
     const userRef = ref(db, `users/${uid}`);
