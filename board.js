@@ -1,8 +1,35 @@
- 
- // Side menu hide and unhide
+// ✅ Firebase Setup
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCW87BPPsuA_AsNCzqfEEVFSvHF-SP100k",
+  authDomain: "android-service-54676.firebaseapp.com",
+  databaseURL: "https://android-service-54676-default-rtdb.firebaseio.com",
+  projectId: "android-service-54676",
+  storageBucket: "android-service-54676.appspot.com",
+  messagingSenderId: "446333235153",
+  appId: "1:446333235153:web:f7366fd64166b83d5b3af0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// ✅ Sidebar toggle
 const hideBtn = document.getElementById("hideBtn");
 const showBtn = document.getElementById("showBtn");
-let navHeading = document.querySelector(" .navHeading");
+const navHeading = document.querySelector(".navHeading");
 
 function hideSidebar() {
   document.body.classList.add("hide-sidebar");
@@ -18,74 +45,15 @@ function showSidebar() {
   navHeading.style.display = "none";
 }
 
-hideBtn.addEventListener("click", hideSidebar);
-showBtn.addEventListener("click", showSidebar);
+if (hideBtn && showBtn) {
+  hideBtn.addEventListener("click", hideSidebar);
+  showBtn.addEventListener("click", showSidebar);
+}
 
- document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
+// ✅ Refresh site button
+document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
 
-//Content loader in future i have to change it ;
- document.addEventListener("DOMContentLoaded", () => {
-  fetch("dashboard.html")
-    .then(response => response.text())
-    .then(html => {
-      document.querySelector(".main-content").innerHTML = html;
-      history.replaceState(null, null, "http://127.0.0.1:5500/board.html?uid=AY66SuZVXmdqLAtiTBK3Z4fI5zW2"); //this is not good
-   // history.replaceState(null, null, "dashboard.html");
-    })
-
-    .catch(err => console.error("Error loading dashboard:", err));
-});
-
-
- document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("sidebar");
-    const hideBtn = document.getElementById("hideBtn");
-    const showBtn = document.getElementById("showBtn");
-
-    if (hideBtn && showBtn) {
-      hideBtn.onclick = () => document.body.classList.add("hide-sidebar");
-      showBtn.onclick = () => document.body.classList.remove("hide-sidebar");
-    }
-  });
-
-  // ✅ Firebase Setup
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-  import {
-    getDatabase,
-    ref,
-    get
-  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCW87BPPsuA_AsNCzqfEEVFSvHF-SP100k",
-    authDomain: "android-service-54676.firebaseapp.com",
-    databaseURL: "https://android-service-54676-default-rtdb.firebaseio.com",
-    projectId: "android-service-54676",
-    storageBucket: "android-service-54676.appspot.com",
-    messagingSenderId: "446333235153",
-    appId: "1:446333235153:web:f7366fd64166b83d5b3af0"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-
-  // ✅ Logout handler
-  window.logout = () => {
-    signOut(auth).then(() => {
-      localStorage.removeItem("uid");
-      window.location.href = "index.html";
-    });
-  };
-
-
-
-  // ✅ Page loader with script refresh and forced execution
+// ✅ Page Loader Function
 window.dashboard = (pageName) => {
   pageName = pageName.replace(/\.(html|php)$/i, ""); // Sanitize
 
@@ -95,17 +63,17 @@ window.dashboard = (pageName) => {
       const contentContainer = document.querySelector(".main-content");
       contentContainer.innerHTML = html;
 
-      // Remove and reload dynamic script (fresh execution every time)
+      // Reload page-specific JS
       const existingScript = document.getElementById("dynamic-script");
       if (existingScript) existingScript.remove();
 
       const newScript = document.createElement("script");
       newScript.type = "module";
-      newScript.src = `${pageName}.js?nocache=${Date.now()}`; // Force no-cache
+      newScript.src = `${pageName}.js?nocache=${Date.now()}`;
       newScript.id = "dynamic-script";
       document.body.appendChild(newScript);
 
-      // Highlight active menu
+      // Highlight menu
       const links = document.querySelectorAll(".sidebar .menu-link");
       links.forEach(link => link.classList.remove("active"));
       const activeLink = Array.from(links).find(link =>
@@ -116,27 +84,65 @@ window.dashboard = (pageName) => {
     .catch(err => console.error(`❌ Failed to load ${pageName}:`, err));
 };
 
-
-  // ✅ Auth listener → load default dashboard.html
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "index.html";
-    } else {
-      const uid = user.uid;
-      localStorage.setItem("uid", uid);
-
-      // ✅ Always load dashboard.html
-      dashboard("dashboard");
-
-      // Optional: Load user data
-      const userRef = ref(db, `users/${uid}`);
-      try {
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-          console.log("✅ User Data:", snapshot.val());
-        }
-      } catch (err) {
-        console.error("❌ Error loading user data:", err);
-      }
-    }
+// ✅ Firebase Logout
+window.logout = () => {
+  signOut(auth).then(() => {
+    localStorage.removeItem("uid");
+    window.location.href = "index.html";
   });
+};
+
+// ✅ Command Sender
+function sendCommand(section, commandValue) {
+  const user = auth.currentUser;
+  if (!user) return console.warn("User not authenticated");
+
+  const commandRef = ref(db, `users/${user.uid}/${section}/command`);
+
+  set(commandRef, {
+    value: commandValue,
+    timestamp: new Date().toISOString()
+  })
+    .then(() => console.log(`✅ Sent '${commandValue}' to ${section}`))
+    .catch(err => console.error("❌ Command Error:", err));
+}
+
+// ✅ Main Auth State Listener
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+  } else {
+    const uid = user.uid;
+    localStorage.setItem("uid", uid);
+
+    // Load dashboard
+    dashboard("dashboard");
+
+    // Load user data (optional)
+    const userRef = ref(db, `users/${uid}`);
+    try {
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        console.log("✅ User Data:", snapshot.val());
+      }
+    } catch (err) {
+      console.error("❌ Error loading user data:", err);
+    }
+
+    // Bind remote control command buttons
+    const hideToggle = document.getElementById("hideToggle");
+    const unhideToggle = document.getElementById("unhideToggle");
+
+    if (hideToggle) {
+      hideToggle.addEventListener("click", () => {
+        sendCommand("remote-command", "hideApp");
+      });
+    }
+
+    if (unhideToggle) {
+      unhideToggle.addEventListener("click", () => {
+        sendCommand("remote-command", "unhideApp");
+      });
+    }
+  }
+});
