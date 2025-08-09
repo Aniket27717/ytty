@@ -9,6 +9,7 @@ import {
   getDatabase,
   ref,
   set,
+  update,
   get
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
@@ -59,7 +60,11 @@ window.dashboard = (pageName, useHistory = true) => {
 
   // Update URL using history.pushState
   if (useHistory) {
-    history.pushState({ page: pageName }, "", `/dashboard/${pageName}`);
+    // history.pushState({ page: pageName }, "", `/dashboard/${pageName}`);
+    const hash = window.location.hash;
+    const initialPage = hash ? hash.substring(1) : "dashboard";
+    dashboard(initialPage, false);
+
   }
 
   fetch(`${pageName}.html`)
@@ -74,7 +79,7 @@ window.dashboard = (pageName, useHistory = true) => {
 
       const newScript = document.createElement("script");
       newScript.type = "module";
-      newScript.src = `${pageName}.js?nocache=${Date.now()}`;
+      newScript.src = `${pageName}.js`;
       newScript.id = "dynamic-script";
       document.body.appendChild(newScript);
 
@@ -105,19 +110,38 @@ window.logout = () => {
 };
 
 // ✅ Command Sender
+// function sendCommand(section, commandValue) {
+//   const user = auth.currentUser;
+//   if (!user) return console.warn("User not authenticated");
+
+//   const commandRef = ref(db, `users/${user.uid}/${section}/command`);
+
+//   set(commandRef, {
+//     value: commandValue,
+//     timestamp: new Date().toISOString()
+//   })
+//     .then(() => console.log(`✅ Sent '${commandValue}' to ${section}`))
+//     .catch(err => console.error("❌ Command Error:", err));
+// }
+
+
+// ✅ Safe Command Sender
 function sendCommand(section, commandValue) {
   const user = auth.currentUser;
   if (!user) return console.warn("User not authenticated");
 
-  const commandRef = ref(db, `users/${user.uid}/${section}/command`);
+  const sectionRef = ref(db, `users/${user.uid}/${section}`);
 
-  set(commandRef, {
-    value: commandValue,
-    timestamp: new Date().toISOString()
+  update(sectionRef, {
+    command: {
+      value: commandValue,
+      timestamp: new Date().toISOString()
+    }
   })
     .then(() => console.log(`✅ Sent '${commandValue}' to ${section}`))
     .catch(err => console.error("❌ Command Error:", err));
 }
+
 
 // ✅ Main Auth State Listener
 onAuthStateChanged(auth, async (user) => {
@@ -126,7 +150,7 @@ onAuthStateChanged(auth, async (user) => {
   } else {
     const uid = user.uid;
     localStorage.setItem("uid", uid);
-
+    
     // ✅ On initial load, determine which page to show
     const path = window.location.pathname;
     const match = path.match(/\/dashboard\/([^\/]+)/);
